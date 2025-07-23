@@ -40,5 +40,9 @@
 # debug information files
 *.dwo
 
-# dist for now
+# clangd cache
+.cache
+
+#
 build/
+AGENTS.md

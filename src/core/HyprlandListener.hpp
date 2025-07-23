@@ -1,9 +1,8 @@
 #pragma once
 
-#include <string>
-#include <vector>
 #include <functional>
 #include <map>
+#include <string>
 
 struct HyprlandEvent {
     std::string type;
@@ -13,7 +12,7 @@ using SubscriptionId = size_t;
 using EventCallback = std::function<void(const HyprlandEvent&)>;
 
 class HyprlandListener {
-public:
+  public:
     HyprlandListener();
     ~HyprlandListener();
 
@@ -22,7 +21,7 @@ public:
     SubscriptionId subscribe(EventCallback callback);
     void unsubscribe(SubscriptionId id);
 
-private:
+  private:
     int socket_fd;
     SubscriptionId next_id = 0;
 

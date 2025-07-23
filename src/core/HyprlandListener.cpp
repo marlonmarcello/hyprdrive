@@ -20,38 +20,31 @@ SubscriptionId HyprlandListener::subscribe(EventCallback callback) {
     return id;
 }
 
-void HyprlandListener::unsubscribe(SubscriptionId id) {
-    subscribers.erase(id);
-}
+void HyprlandListener::unsubscribe(SubscriptionId id) { subscribers.erase(id); }
 
 void HyprlandListener::start() {
-    auto socket_path = HyprlandPaths::getEventSocketPath();
-
-    if (!socket_path) {
-        std::cerr << "Error: required environment variables not set." << std::endl;
-        return;
-    }
-
-    socket_fd = HyprlandPaths::connectToSocket(*socket_path);
+    socket_fd = HyprlandPaths::getEventSocket();
     if (socket_fd == -1) {
-        std::cerr << "Error: listener failed to connect" << std::endl;
         return;
     }
 
-    std::cout << "Successfully connected! Listening for events..." << std::endl;
+    std::cout
+        << "[HyprlandListener] Successfully connected! Listening for events..."
+        << std::endl;
 
     std::string buffer_str;
     char raw_buffer[4096];
     while (true) {
         ssize_t bytes = recv(socket_fd, raw_buffer, sizeof(raw_buffer), 0);
         if (bytes <= 0) {
-            std::cerr << "Connection closed or error." << std::endl;
+            std::cerr << "[HyprlandListener] Connection closed or error."
+                      << std::endl;
             break;
         }
         buffer_str.append(raw_buffer, bytes);
 
         size_t newline_pos;
-        while((newline_pos = buffer_str.find('\n')) != std::string::npos) {
+        while ((newline_pos = buffer_str.find('\n')) != std::string::npos) {
             std::string message = buffer_str.substr(0, newline_pos);
             buffer_str.erase(0, newline_pos + 1);
 
@@ -61,11 +54,9 @@ void HyprlandListener::start() {
             if (delim_pos != std::string::npos) {
                 event.type = message.substr(0, delim_pos);
                 event.data = message.substr(delim_pos + 2);
-                std::cout << "[Event: " << event.type << "] [Data: " << event.data << "]" << std::endl;
-            }
-            else {
+            } else {
+                // Temporary fallback for now
                 event.type = message;
-                std::cout << "Message: " << message << std::endl;
             }
 
             for (const auto& [id, callback] : subscribers) {
