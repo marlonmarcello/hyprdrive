@@ -16,4 +16,5 @@ add_executable(hyprdrive
 )
 
 target_link_libraries(hyprdrive PRIVATE nlohmann_json::nlohmann_json)
+target_compile_features(hyprdrive PUBLIC cxx_std_23)
 target_include_directories(hyprdrive PUBLIC src)
