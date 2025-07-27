@@ -1,6 +1,5 @@
 #include "WorkspaceService.hpp"
 #include "core/HyprlandClient.hpp"
-#include "nlohmann/json_fwd.hpp"
 #include <functional>
 #include <print>
 
@@ -23,9 +22,19 @@ void WorkspaceService::onEvent(const HyprlandEvent& event) {
         this->current_workspace = event.data;
         std::println("[WorkspaceService] State updated -> {}",
                      this->current_workspace);
+    } else if (event.type == "createworkspace") {
+        int new_id = all_workspaces.size() + 1;
+        all_workspaces.push_back(Workspace{.id = new_id, .name = event.data});
+        std::println("[WorkspaceService] Workspace created: {0}. Total: {1}",
+                     event.data, all_workspaces.size());
+    } else if (event.type == "destroyworkspace") {
+        std::string destroyed_name = event.data;
+        std::erase_if(all_workspaces, [&](const Workspace& ws) {
+            return ws.name == destroyed_name;
+        });
+        std::println("[WorkspaceService] Workspace destroyed: {0}. Total: {1}",
+                     destroyed_name, all_workspaces.size());
     }
-
-    // TODO: implement create and destroy
 }
 
 void WorkspaceService::fetchInitialWorkspaces() {

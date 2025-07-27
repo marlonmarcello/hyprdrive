@@ -43,6 +43,10 @@
 # clangd cache
 .cache
 
+# xmake
+.xmake/
+
 #
 build/
 AGENTS.md
+.DS_Store

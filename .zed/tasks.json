@@ -1,63 +1,24 @@
 // Project tasks configuration. See https://zed.dev/docs/tasks for documentation.
 [
   {
-    "label": "CMake configure Debug",
-    "command": "cmake",
-    "args": ["-DCMAKE_BUILD_TYPE=Debug", "-B", "build/"],
+    "label": "xmake build",
+    "command": "xmake build",
     "env": {},
     "use_new_terminal": false,
     "allow_concurrent_runs": false,
     "reveal": "always"
   },
   {
-    "label": "CMake configure Relase",
-    "command": "cmake",
-    "args": ["-DCMAKE_BUILD_TYPE=Release", "-B", "build/"],
+    "label": "xmake run",
+    "command": "xmake run -yv",
     "env": {},
     "use_new_terminal": false,
     "allow_concurrent_runs": false,
     "reveal": "always"
   },
   {
-    "label": "CMake build",
-    "command": "cmake",
-    "args": ["--build", "build"],
-    "env": {},
-    "use_new_terminal": false,
-    "allow_concurrent_runs": false,
-    "reveal": "always"
-  },
-  {
-    "label": "CMake configure Debug and build",
-    "command": "cmake -DCMAKE_BUILD_TYPE=Debug -B build/ && cmake --build build/",
-    "args": [],
-    "env": {},
-    "use_new_terminal": false,
-    "allow_concurrent_runs": false,
-    "reveal": "always"
-  },
-  {
-    "label": "CMake configure Release and build",
-    "command": "cmake -DCMAKE_BUILD_TYPE=Release -B build/ && cmake --build build/",
-    "args": [],
-    "env": {},
-    "use_new_terminal": false,
-    "allow_concurrent_runs": false,
-    "reveal": "always"
-  },
-  {
-    "label": "CMake build and run",
-    "command": "cmake --build build/ && build/hyprdrive",
-    "args": [],
-    "env": {},
-    "use_new_terminal": false,
-    "allow_concurrent_runs": false,
-    "reveal": "always"
-  },
-  {
-    "label": "Run Hyprdrive",
-    "command": "build/hyprdrive",
-    "args": [],
+    "label": "xmake build and run",
+    "command": "xmake build -yv && xmake run -yv",
     "env": {},
     "use_new_terminal": false,
     "allow_concurrent_runs": false,
