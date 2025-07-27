@@ -1,26 +1,26 @@
 #include "HyprlandClient.hpp"
 #include "HyprlandPaths.hpp"
 #include "nlohmann/json_fwd.hpp"
-#include <iostream>
-#include <optional>
+#include <expected>
+#include <print>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <unistd.h>
 
-std::optional<nlohmann::json> HyprlandClient::getWorkspaces() {
+std::expected<nlohmann::json, std::string> HyprlandClient::getWorkspaces() {
 
     int sock_fd = HyprlandPaths::getCommandSocket();
     if (sock_fd == -1) {
-        return std::nullopt;
+        return std::unexpected("Client failed to connect");
     }
 
     const char* command = "j/workspaces";
     if (send(sock_fd, command, strlen(command), 0) == -1) {
-        std::cerr << "[HyprlandClient] Error: failed to send command '" +
-                         std::string(command) + "'"
-                  << std::endl;
+        std::println(stderr,
+                     "[HyprlandClient] Error: failed to send command '{}'",
+                     command);
         close(sock_fd);
-        return std::nullopt;
+        return std::unexpected("Failed to send command");
     }
 
     std::string response;
@@ -34,10 +34,10 @@ std::optional<nlohmann::json> HyprlandClient::getWorkspaces() {
     close(sock_fd);
 
     if (response.empty()) {
-        std::cerr
-            << "[HyprlandClient] Error: Received empty response from Hyprland."
-            << std::endl;
-        return std::nullopt;
+        std::println(
+            stderr,
+            "[HyprlandClient] Error: Received empty response from Hyprland");
+        return std::unexpected("Received empty response");
     }
 
     return nlohmann::json::parse(response, nullptr, false);

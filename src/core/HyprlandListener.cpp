@@ -37,7 +37,7 @@ void HyprlandListener::start() {
         ssize_t bytes = recv(socket_fd, raw_buffer, sizeof(raw_buffer), 0);
         if (bytes <= 0) {
             std::println(stderr,
-                         "[HyprlandListener] Connection closed or error.");
+                         "[HyprlandListener] Connection closed or error");
             break;
         }
         buffer_str.append(raw_buffer, bytes);

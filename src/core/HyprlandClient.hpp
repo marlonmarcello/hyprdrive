@@ -1,9 +1,9 @@
 #pragma once
 
+#include <expected>
 #include <nlohmann/json.hpp>
-#include <optional>
 
 class HyprlandClient {
   public:
-    static std::optional<nlohmann::json> getWorkspaces();
+    static std::expected<nlohmann::json, std::string> getWorkspaces();
 };

@@ -31,21 +31,18 @@ void WorkspaceService::onEvent(const HyprlandEvent& event) {
 void WorkspaceService::fetchInitialWorkspaces() {
     std::println("[WorkspaceService] Fetching initial workspace state...");
 
-    auto workspaces_json_opt = HyprlandClient::getWorkspaces();
+    auto workspaces = HyprlandClient::getWorkspaces();
 
-    if (!workspaces_json_opt) {
-        std::println(stderr, "[WorkspaceService] Failed to fetch workspaces");
+    if (!workspaces.has_value()) {
+        std::println(stderr, "[WorkspaceService] Error: {}",
+                     workspaces.error());
         return;
     }
 
-    nlohmann::json workspaces_json = *workspaces_json_opt;
-
-    if (workspaces_json.is_array()) {
-        for (const auto& item : workspaces_json) {
-            Workspace ws;
-            ws.id = item["id"];
-            ws.name = item["name"];
-            all_workspaces.push_back(ws);
+    if (workspaces->is_array()) {
+        for (const auto& item : *workspaces) {
+            all_workspaces.push_back(
+                Workspace{.id = item["id"], .name = item["name"]});
         }
     }
 
