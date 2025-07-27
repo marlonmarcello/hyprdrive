@@ -1,6 +1,6 @@
 #include "HyprlandListener.hpp"
 #include "HyprlandPaths.hpp"
-#include <iostream>
+#include <print>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <unistd.h>
@@ -9,7 +9,7 @@ HyprlandListener::HyprlandListener() : socket_fd(-1) {}
 
 HyprlandListener::~HyprlandListener() {
     if (socket_fd != -1) {
-        std::cout << "Closing socket." << std::endl;
+        std::println("[HyprlandListener] Closing socket");
         close(socket_fd);
     }
 }
@@ -28,17 +28,16 @@ void HyprlandListener::start() {
         return;
     }
 
-    std::cout
-        << "[HyprlandListener] Successfully connected! Listening for events..."
-        << std::endl;
+    std::println(
+        "[HyprlandListener] Successfully connected! Listening for events...");
 
     std::string buffer_str;
     char raw_buffer[4096];
     while (true) {
         ssize_t bytes = recv(socket_fd, raw_buffer, sizeof(raw_buffer), 0);
         if (bytes <= 0) {
-            std::cerr << "[HyprlandListener] Connection closed or error."
-                      << std::endl;
+            std::println(stderr,
+                         "[HyprlandListener] Connection closed or error.");
             break;
         }
         buffer_str.append(raw_buffer, bytes);

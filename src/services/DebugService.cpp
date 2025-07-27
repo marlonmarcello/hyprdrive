@@ -1,6 +1,6 @@
 #include "DebugService.hpp"
 #include <functional>
-#include <iostream>
+#include <print>
 
 DebugService::DebugService(HyprlandListener& listener) : listener(listener) {
     auto callback =
@@ -14,6 +14,5 @@ DebugService::~DebugService() {
 
 void DebugService::onEvent(const HyprlandEvent& event) {
     // This service's only job is to log everything.
-    std::cout << "[DEBUG] Event: " << event.type << ", Data: " << event.data
-              << std::endl;
+    std::println("[DEBUG] Event: {0} | Data: {1}", event.type, event.data);
 }

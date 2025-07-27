@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdlib>
-#include <iostream>
+#include <print>
 #include <string>
 #include <sys/socket.h>
 #include <sys/un.h>
@@ -14,14 +14,15 @@ inline int getSocket(const std::string& socketName) {
     const char* signature = getenv("HYPRLAND_INSTANCE_SIGNATURE");
 
     if (!xdg_runtime_dir || !signature) {
-        std::cerr << "Error: Required environment variables not set."
-                  << std::endl;
+        std::println(
+            stderr,
+            "[HyprlandPaths] Error: Required environment variables not set");
         return -1;
     }
 
     int sock_fd = socket(AF_UNIX, SOCK_STREAM, 0);
     if (sock_fd == -1) {
-        std::cerr << "Error: failed to create socket" << std::endl;
+        std::println(stderr, "[HyprlandPaths] Error: failed to create socket");
         return -1;
     }
 
@@ -34,8 +35,9 @@ inline int getSocket(const std::string& socketName) {
             sizeof(server_addr.sun_path) - 1);
 
     if (connect(sock_fd, (sockaddr*)&server_addr, sizeof(server_addr)) == -1) {
-        std::cerr << "Error: failed to connect to socket: " << socket_path
-                  << std::endl;
+        std::println(stderr,
+                     "[HyprlandPaths] Error: failed to connect to socket {}",
+                     socket_path);
         close(sock_fd);
         return -1;
     }
