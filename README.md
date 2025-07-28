@@ -1,78 +1,58 @@
-# Hyprdrive
-
-> [!WARNING]
-> Still a work in progress
-
-A custom shell tailored specifically to Hyprland.
-
-## Prerequisites
-
-  * **[cmake](https://cmake.org/download/)** (3.21 or newer)
-  * A C++ compiler that supports C++ 23
-  * [Slint](https://docs.slint.dev/latest/docs/cpp/cmake#install-slint)
-  * [hyprwayland-scanner](https://github.com/hyprwm/hyprwayland-scanner)
-
 ## Project Overview
 
-Hyprdrive is a custom desktop shell environment being built for the Hyprland Wayland compositor. The project's goal is to create a functional and modular shell by developing a series of independent "services" that communicate with the underlying system and window manager. The project is being developed in C++ with a focus on modern practices, robust architecture, and a deep understanding of systems programming concepts.
-
-## Goals and Objectives
+Hyprdrive is a custom desktop shell environment being built for the Hyprland Wayland compositor. The project's goal is to create a functional and modular shell by developing a series of independent "services" that communicate with the underlying system and window manager.
 
 **Primary Goal:** Develop a complete, GNOME-like desktop shell with custom components (panel, control center, etc.).
 
-**Architectural Goal:** Build a highly modular system where features are encapsulated in services. This will be achieved by using the Observer (Pub/Sub) design pattern, with a central event broadcaster and multiple subscriber services.
+**Architectural Goal:** Build a highly modular system where features are encapsulated in services and components.
 
-**Technical Goal:** Utilize modern C++ (C++23 and newer) and standard tooling (CMake) to create a robust and maintainable codebase.
+**Technical Goal:** Utilize Rust to create a robust and maintainable codebase.
 
-**Learning Goal:** Ultimately, this will serve as a hands-on project to learn low-level systems programming, C++ best practices, API interaction, and more.
+**Learning Goal:** Ultimately, this will serve as a hands-on project to learn low-level systems programming, Rust best practices, API interaction, and more.
 
-## Current Status & Accomplishments
+## Goals and Objectives
 
-The project is currently a functional, command-line-based event processing engine.
+It will be an interactive course style project between me and you. You will be my instructor and you will teach me like a professor. You will follow the and syllabus to achieve our goals and you will teach me Rust while building this project.
 
-### Module 1: C++ Environment & Build System
+We will write code and then explain each line and syntax and concept. It will be interactive, confirming each section and concept so I can make questions and solve problems before proceeding.
 
-- A complete C++ development toolchain (g++, CMake, GDB) has been established.
-- A scalable project structure using src/core and src/services directories is in place.
-- Dependency management has been implemented using CMake's FetchContent module to integrate the nlohmann/json library.
+## Course Syllabus: Building hyprdrive in Rust
+### Module 1: Rust Foundations & Project Setup
 
-### Module 2: Core IPC & Event Broadcasting
+1.1: Installing the Rust toolchain (rustup) and creating our project with Cargo.
 
-- A reusable `HyprlandListener` class has been implemented. This class acts as the central Subject in our Observer pattern.
-- The listener connects to the Hyprland event socket, reads the data stream robustly, parses events into a structured `HyprlandEvent` object, and dispatches these events to all subscribers.
-- The architecture supports multiple subscribers through a subscribe/unsubscribe mechanism using std::map and std::function for callbacks.
+1.2: Introduction to Rust Syntax: variables, functions, and control flow.
 
-### Module 3: Service Implementation
+1.3: The Ownership Model: Understanding Rust's core principles of ownership, borrowing, and lifetimes.
 
-- The first feature, `WorkspaceService`, has been implemented. It subscribes to the listener and maintains the state of the currently active workspace.
-- A `DebugService` has been created to demonstrate the flexibility of the architecture, allowing for raw logging of all events for debugging purposes without polluting feature-specific services.
+### Module 2: Interacting with Hyprland (IPC)
 
-## Future Roadmap
+2.1: Asynchronous Rust with tokio.
 
-The following modules are planned to build upon the current foundation.
+2.2: Connecting to the Hyprland event socket using tokio.
 
-### Phase 1: Complete Core Data Services
+2.3: Building a robust, asynchronous event listener.
 
-- Enhance `WorkspaceService`: The immediate next step. We will implement the `HyprlandClient` to make an initial query to the Hyprland command socket to get the full list of available workspaces. This will involve:
-- Implementing a `HyprlandClient` class to send one-off commands.
-- Parsing the JSON response from Hyprland.
-- Storing the full workspace state (list of all workspaces + the active one).
-- Keeping the list updated via `createworkspace` and `destroyworkspace` events.
-- Create `WindowService`: A new service that subscribes to activewindowv2 and windowtitle events to track the currently focused window and its title.
+2.4: Implementing the Observer Pattern in idiomatic Rust.
 
-### Phase 2: GUI Integration
+### Module 3: State Management & Services
 
-- Integrate a GUI Toolkit~, most likely QT as that's what Hyprland is using~. QT and GTK are awful, I really tried. Setting up QT was a nbightmare of obscure cmake flags and functions. GTK was promising, I managed to get a hello world relatively easy but working with XML is just a terrible experience. Ended up using Slint, love the reactivity and how easy it was to integrate with CMake and C++.
-- Build a Panel (The "Bar"): Create the first UI component. This will be a top-level window configured as a Wayland layer surface.
-- Connect Services to UI: The UI panel will instantiate and use the services. For example, it will use the WorkspaceService to get the list of workspaces and render them as clickable buttons. The onEvent callbacks in our services will be modified to emit signals that the UI can react to, updating the display in real-time.
+3.1: Defining data with structs and enums.
 
-### Phase 3: Control Center and System Services
+3.2: Implementing the WorkspaceService to manage state.
 
-- Implement a D-Bus Listener: Create a new "core" listener for the D-Bus system bus.
-- Develop System Services: Build new services for networking, Bluetooth, audio, etc., that subscribe to the `DBusListener`.
-- Build Control Center UI: Create a new UI application for the control center that uses these system services to display information and send commands back to D-Bus.
+3.3: Safe Concurrency: Using Arc and Mutex to share state safely between threads.
 
-### Phase 4: High-Level Shell CLI
+### Module 4: Building the UI with Slint
 
-- Implement Command-Line Parsing: Parse arguments like `toggleCommandCenter` or `setVolume`.
-- Create an Internal Command Bus: Develop a mechanism for the CLI to communicate with the running shell components and services to trigger actions.
+4.1: Integrating the Slint UI toolkit with Cargo.
+
+4.2: Designing the panel UI in the .slint markup language.
+
+4.3: Creating the data binding bridge between our Rust services and the Slint UI.
+
+### Module 5: Creating the Shell Panel
+
+5.1: Interfacing with Wayland protocols using Rust crates.
+
+5.2: Implementing the wlr-layer-shell protocol to anchor our window to the screen.
