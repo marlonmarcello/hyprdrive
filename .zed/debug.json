@@ -1,0 +1,11 @@
+[
+  {
+    "label": "Build & Debug native binary",
+    "build": {
+      "command": "cargo",
+      "args": ["build"]
+    },
+    "sourceLanguages": ["rust"],
+    "adapter": "CodeLLDB"
+  }
+]
