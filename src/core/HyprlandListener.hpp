@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <functional>
 #include <map>
 #include <string>
@@ -17,11 +18,13 @@ class HyprlandListener {
     ~HyprlandListener();
 
     void           start();
+    void           stop();
 
     SubscriptionId subscribe(EventCallback callback);
     void           unsubscribe(SubscriptionId id);
 
   private:
+    std::atomic<bool>                       is_running{true};
     int                                     socket_fd;
     SubscriptionId                          next_id = 0;
 

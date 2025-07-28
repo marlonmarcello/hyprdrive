@@ -1,8 +1,6 @@
 #pragma once
 
 #include "../core/HyprlandListener.hpp"
-#include <qobject.h>
-#include <qtmetamacros.h>
 #include <string>
 
 struct Workspace {
@@ -10,11 +8,7 @@ struct Workspace {
     std::string name;
 };
 
-class WorkspaceService : public QObject {
-    Q_OBJECT
-    QML_ELEMENT
-    Q_PROPERTY(std::string activeWorkspace READ activeWorkspace NOTIFY activeWorkspaceChanged)
-
+class WorkspaceService {
   public:
     WorkspaceService(HyprlandListener& listener);
     ~WorkspaceService();

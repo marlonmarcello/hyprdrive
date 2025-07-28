@@ -34,10 +34,11 @@ void HyprlandListener::start() {
 
     std::string buffer_str;
     char        raw_buffer[4096];
-    while (true) {
+    while (is_running) {
         ssize_t bytes = recv(socket_fd, raw_buffer, sizeof(raw_buffer), 0);
         if (bytes <= 0) {
             std::println(stderr, "[HyprlandListener] Connection closed or error");
+            is_running = false;
             break;
         }
         buffer_str.append(raw_buffer, bytes);
@@ -63,5 +64,14 @@ void HyprlandListener::start() {
                 callback(event);
             }
         }
+    }
+}
+
+void HyprlandListener::stop() {
+    is_running = false;
+
+    if (socket_fd != -1) {
+        close(socket_fd);
+        socket_fd = -1;
     }
 }

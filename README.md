@@ -5,6 +5,13 @@
 
 A custom shell tailored specifically to Hyprland.
 
+## Prerequisites
+
+  * **[cmake](https://cmake.org/download/)** (3.21 or newer)
+  * A C++ compiler that supports C++ 23
+  * [Slint](https://docs.slint.dev/latest/docs/cpp/cmake#install-slint)
+  * [hyprwayland-scanner](https://github.com/hyprwm/hyprwayland-scanner)
+
 ## Project Overview
 
 Hyprdrive is a custom desktop shell environment being built for the Hyprland Wayland compositor. The project's goal is to create a functional and modular shell by developing a series of independent "services" that communicate with the underlying system and window manager. The project is being developed in C++ with a focus on modern practices, robust architecture, and a deep understanding of systems programming concepts.
@@ -15,7 +22,7 @@ Hyprdrive is a custom desktop shell environment being built for the Hyprland Way
 
 **Architectural Goal:** Build a highly modular system where features are encapsulated in services. This will be achieved by using the Observer (Pub/Sub) design pattern, with a central event broadcaster and multiple subscriber services.
 
-**Technical Goal:** Utilize modern C++ (C++17 and newer) and standard tooling (CMake) to create a robust and maintainable codebase.
+**Technical Goal:** Utilize modern C++ (C++23 and newer) and standard tooling (CMake) to create a robust and maintainable codebase.
 
 **Learning Goal:** Ultimately, this will serve as a hands-on project to learn low-level systems programming, C++ best practices, API interaction, and more.
 
@@ -55,7 +62,7 @@ The following modules are planned to build upon the current foundation.
 
 ### Phase 2: GUI Integration
 
-- Integrate a GUI Toolkit, most likely QT as that's what Hyprland is using.
+- Integrate a GUI Toolkit~, most likely QT as that's what Hyprland is using~. QT and GTK are awful, I really tried. Setting up QT was a nbightmare of obscure cmake flags and functions. GTK was promising, I managed to get a hello world relatively easy but working with XML is just a terrible experience. Ended up using Slint, love the reactivity and how easy it was to integrate with CMake and C++.
 - Build a Panel (The "Bar"): Create the first UI component. This will be a top-level window configured as a Wayland layer surface.
 - Connect Services to UI: The UI panel will instantiate and use the services. For example, it will use the WorkspaceService to get the list of workspaces and render them as clickable buttons. The onEvent callbacks in our services will be modified to emit signals that the UI can react to, updating the display in real-time.
 
