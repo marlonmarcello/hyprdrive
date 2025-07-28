@@ -17,7 +17,7 @@ class WindowService {
 
   private:
     HyprlandListener& listener;
-    SubscriptionId subscription_id;
+    SubscriptionId    subscription_id;
 
-    Window current_window;
+    Window            current_window;
 };

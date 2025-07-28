@@ -1,11 +1,8 @@
 #include "DebugService.hpp"
-#include <functional>
 #include <print>
 
 DebugService::DebugService(HyprlandListener& listener) : listener(listener) {
-    auto callback =
-        std::bind(&DebugService::onEvent, this, std::placeholders::_1);
-    this->subscription_id = this->listener.subscribe(callback);
+    this->subscription_id = this->listener.subscribe([this](const HyprlandEvent& event) { this->onEvent(event); });
 }
 
 DebugService::~DebugService() {

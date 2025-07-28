@@ -7,8 +7,8 @@ int main() {
     HyprlandListener listener;
 
     WorkspaceService workspace_service(listener);
-    WindowService window_service(listener);
-    DebugService debug_service(listener);
+    WindowService    window_service(listener);
+    DebugService     debug_service(listener);
 
     listener.start();
 

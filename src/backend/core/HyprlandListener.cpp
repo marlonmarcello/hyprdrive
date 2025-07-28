@@ -16,11 +16,13 @@ HyprlandListener::~HyprlandListener() {
 
 SubscriptionId HyprlandListener::subscribe(EventCallback callback) {
     SubscriptionId id = next_id++;
-    subscribers[id] = callback;
+    subscribers[id]   = callback;
     return id;
 }
 
-void HyprlandListener::unsubscribe(SubscriptionId id) { subscribers.erase(id); }
+void HyprlandListener::unsubscribe(SubscriptionId id) {
+    subscribers.erase(id);
+}
 
 void HyprlandListener::start() {
     socket_fd = HyprlandPaths::getEventSocket();
@@ -28,16 +30,14 @@ void HyprlandListener::start() {
         return;
     }
 
-    std::println(
-        "[HyprlandListener] Successfully connected! Listening for events...");
+    std::println("[HyprlandListener] Successfully connected! Listening for events...");
 
     std::string buffer_str;
-    char raw_buffer[4096];
+    char        raw_buffer[4096];
     while (true) {
         ssize_t bytes = recv(socket_fd, raw_buffer, sizeof(raw_buffer), 0);
         if (bytes <= 0) {
-            std::println(stderr,
-                         "[HyprlandListener] Connection closed or error");
+            std::println(stderr, "[HyprlandListener] Connection closed or error");
             break;
         }
         buffer_str.append(raw_buffer, bytes);
@@ -48,12 +48,13 @@ void HyprlandListener::start() {
             buffer_str.erase(0, newline_pos + 1);
 
             HyprlandEvent event;
-            size_t delim_pos = message.find(">>");
+            size_t        delim_pos = message.find(">>");
 
             if (delim_pos != std::string::npos) {
                 event.type = message.substr(0, delim_pos);
                 event.data = message.substr(delim_pos + 2);
-            } else {
+            }
+            else {
                 // Temporary fallback for now
                 event.type = message;
             }

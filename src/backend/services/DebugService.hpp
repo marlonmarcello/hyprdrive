@@ -9,5 +9,5 @@ class DebugService {
 
   private:
     HyprlandListener& listener;
-    SubscriptionId subscription_id;
+    SubscriptionId    subscription_id;
 };
