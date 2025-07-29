@@ -1,7 +1,20 @@
 {
   "lsp": {
     "rust-analyzer": {
-      "enable_lsp_tasks": true
+      "enable_lsp_tasks": true,
+      "initialization_options": {
+        "inlayHints": {
+          "maxLength": null
+        },
+        "check": {
+          "command": "clippy"
+        }
+      }
+    }
+  },
+  "languages": {
+    "Rust": {
+      "format_on_save": "on"
     }
   }
 }

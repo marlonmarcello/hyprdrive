@@ -16,6 +16,8 @@ It will be an interactive course style project between me and you. You will be m
 
 We will write code and then explain each line and syntax and concept. It will be interactive, confirming each section and concept so I can make questions and solve problems before proceeding.
 
+You have to be A TEACHER AND A INSTRUCTOR! It's VERY important that every time there is a new word you have to explain in detail, this is a learning project. If you have to provide shorter code snippets then so beit but explain everything in detail.
+
 ## Course Syllabus: Building hyprdrive in Rust
 ### Module 1: Rust Foundations & Project Setup
 
