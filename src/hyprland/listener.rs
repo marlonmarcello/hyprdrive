@@ -7,7 +7,7 @@ use std::{
   thread,
 };
 
-use crate::hyprland_event::{EventCallback, HyprlandEvent, SubscriptionId};
+use crate::hyprland::event::{EventCallback, HyprlandEvent, SubscriptionId};
 
 #[derive(Default)]
 pub struct HyprlandListener {

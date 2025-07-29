@@ -1,8 +1,8 @@
-use crate::{hyprland_listener::HyprlandListener, services::debug_service::DebugService};
 use std::sync::{Arc, Mutex};
 
-mod hyprland_event;
-mod hyprland_listener;
+use crate::{hyprland::listener::HyprlandListener, services::debug::DebugService};
+
+mod hyprland;
 mod services;
 
 fn main() {
