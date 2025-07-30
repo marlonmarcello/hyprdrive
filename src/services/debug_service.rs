@@ -1,6 +1,6 @@
 use std::sync::{Arc, Mutex};
 
-use crate::hyprland::listener::HyprlandListener;
+use crate::hyprland::hyprland_listener::HyprlandListener;
 
 pub struct DebugService;
 

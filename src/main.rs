@@ -1,6 +1,8 @@
+use hyprland::*;
+use services::*;
 use std::sync::{Arc, Mutex};
 
-use crate::{hyprland::listener::HyprlandListener, services::debug::DebugService};
+use crate::{debug_service::DebugService, hyprland_listener::HyprlandListener, workspace_service::WorkspaceService};
 
 mod hyprland;
 mod services;
@@ -16,6 +18,7 @@ fn main() {
   }
 
   DebugService::new(Arc::clone(&listener));
+  WorkspaceService::new(Arc::clone(&listener));
 
   // This increases the reference count.
   // This does not clone the listener itself. It only clones the Arc pointer,
