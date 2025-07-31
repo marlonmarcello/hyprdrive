@@ -2,17 +2,17 @@ use hyprland::*;
 use services::*;
 use std::sync::{Arc, Mutex};
 
-use crate::{debug_service::DebugService, hyprland_listener::HyprlandListener, workspace_service::WorkspaceService};
+use crate::{debug_service::DebugService, hyprland_ipc::HyprlandIpc, workspace_service::WorkspaceService};
 
 mod hyprland;
 mod services;
 
 fn main() {
-  let listener = Arc::new(Mutex::new(HyprlandListener::default()));
+  let listener = Arc::new(Mutex::new(HyprlandIpc::default()));
 
   if let Ok(mut listen) = listener.lock() {
     if let Err(e) = listen.connect() {
-      eprintln!("[HyprlandListener] Failed to connect: {e}");
+      eprintln!("Failed to connect: {e}");
       return;
     }
   }
@@ -22,7 +22,7 @@ fn main() {
 
   // This increases the reference count.
   // This does not clone the listener itself. It only clones the Arc pointer,
-  let handle = HyprlandListener::start(Arc::clone(&listener));
+  let handle = HyprlandIpc::start(Arc::clone(&listener));
   println!("Main thread continues...");
 
   handle.join().expect("Listener thread paicked");

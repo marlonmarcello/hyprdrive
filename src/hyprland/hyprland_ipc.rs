@@ -1,7 +1,7 @@
 use std::{
   collections::HashMap,
   env,
-  io::{self, BufRead, BufReader},
+  io::{self, BufRead, BufReader, Read, Write},
   os::unix::net::UnixStream,
   sync::{Arc, Mutex},
   thread,
@@ -10,21 +10,33 @@ use std::{
 use super::hyprland_event::{EventCallback, HyprlandEvent, SubscriptionId};
 
 #[derive(Default)]
-pub struct HyprlandListener {
+pub struct HyprlandIpc {
   stream: Option<UnixStream>,
   subscribers: HashMap<SubscriptionId, EventCallback>,
   next_id: SubscriptionId,
 }
 
-impl HyprlandListener {
-  pub fn connect(&mut self) -> io::Result<()> {
+impl HyprlandIpc {
+  fn get_socket(name: &str) -> io::Result<UnixStream> {
     let xdg_dir = env::var("XDG_RUNTIME_DIR").map_err(|e| io::Error::new(io::ErrorKind::NotFound, e))?;
     let signature = env::var("HYPRLAND_INSTANCE_SIGNATURE").map_err(|e| io::Error::new(io::ErrorKind::NotFound, e))?;
-    let socket_path = format!("{xdg_dir}/hypr/{signature}/.socket2.sock");
+    let socket_path = format!("{xdg_dir}/hypr/{signature}/{name}");
 
-    let stream = UnixStream::connect(socket_path)?;
-    println!("[HyprlandListener] Connected");
+    UnixStream::connect(socket_path)
+  }
+
+  pub fn get_listener_socket() -> io::Result<UnixStream> {
+    Self::get_socket(".socket2.sock")
+  }
+
+  pub fn get_command_socket() -> io::Result<UnixStream> {
+    Self::get_socket(".socket.sock")
+  }
+
+  pub fn connect(&mut self) -> io::Result<()> {
+    let stream = HyprlandIpc::get_listener_socket()?;
     self.stream = Some(stream);
+    println!("[HyprlandIpc] Connected");
     Ok(())
   }
 
@@ -50,10 +62,10 @@ impl HyprlandListener {
         let mut reader = BufReader::new(stream);
         let mut line_buffer = String::new();
 
-        println!("[HyprlandListener] Starting event loop...");
+        println!("[HyprlandIpc] Starting event loop...");
         while let Ok(bytes_read) = reader.read_line(&mut line_buffer) {
           if bytes_read == 0 {
-            eprintln!("[HyprlandListener] Connection closed or error.");
+            eprintln!("[HyprlandIpc] Connection closed or error.");
             break;
           }
 
@@ -78,7 +90,20 @@ impl HyprlandListener {
           line_buffer.clear();
         }
       }
-      eprintln!("[HyprlandListener] Connection closed or error.");
+      eprintln!("[HyprlandIpc] Connection closed or error.");
     })
+  }
+
+  /// Sends a raw command to the Hyprland command socket and returns the raw response.
+  pub fn send_command(command: &str) -> io::Result<String> {
+    let mut stream = Self::get_command_socket()?;
+    stream.write_all(command.as_bytes())?;
+
+    let mut response = String::new();
+    stream.read_to_string(&mut response)?;
+
+    println!("{response}");
+
+    Ok(response)
   }
 }
