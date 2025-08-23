@@ -6,6 +6,7 @@ use crate::{debug_service::DebugService, hyprland_ipc::HyprlandIpc, workspace_se
 
 mod hyprland;
 mod services;
+mod shared;
 
 fn main() {
   let listener = Arc::new(Mutex::new(HyprlandIpc::default()));

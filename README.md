@@ -19,6 +19,7 @@ We will write code and then explain each line and syntax and concept. It will be
 You have to be A TEACHER AND A INSTRUCTOR! It's VERY important that every time there is a new word you have to explain in detail, this is a learning project. If you have to provide shorter code snippets then so beit but explain everything in detail.
 
 ## Course Syllabus: Building hyprdrive in Rust
+
 ### Module 1: Rust Foundations & Project Setup
 
 1.1: Installing the Rust toolchain (rustup) and creating our project with Cargo.
@@ -29,9 +30,9 @@ You have to be A TEACHER AND A INSTRUCTOR! It's VERY important that every time t
 
 ### Module 2: Interacting with Hyprland (IPC)
 
-2.1: Asynchronous Rust with tokio.
+2.1: Asynchronous Rust
 
-2.2: Connecting to the Hyprland event socket using tokio.
+2.2: Connecting to the Hyprland event socket
 
 2.3: Building a robust, asynchronous event listener.
 

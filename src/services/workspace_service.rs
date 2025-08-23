@@ -1,8 +1,11 @@
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, MutexGuard};
 
 use serde::Deserialize;
 
-use crate::hyprland::{hyprland_event::HyprlandEvent, hyprland_ipc::HyprlandIpc};
+use crate::{
+  hyprland::{hyprland_event::HyprlandEvent, hyprland_ipc::HyprlandIpc},
+  shared::LockError,
+};
 
 #[derive(Deserialize, Debug, Clone)]
 pub struct Workspace {
@@ -11,7 +14,7 @@ pub struct Workspace {
 }
 
 #[derive(Default, Debug)]
-struct WorkspaceState {
+pub struct WorkspaceState {
   active_workspace: String,
   all_workspaces: Vec<Workspace>,
 }
@@ -19,8 +22,6 @@ struct WorkspaceState {
 pub struct WorkspaceService {
   state: Arc<Mutex<WorkspaceState>>,
 }
-
-type LockError = String;
 
 impl WorkspaceService {
   pub fn new(listener: Arc<Mutex<HyprlandIpc>>) -> Self {
@@ -37,18 +38,23 @@ impl WorkspaceService {
 
     Self { state }
   }
-  pub fn get_active_workspace(&self) -> Result<String, LockError> {
+
+  fn get_state<P, R>(&self, getter: P) -> Result<R, LockError>
+  where
+    P: FnOnce(MutexGuard<WorkspaceState>) -> R,
+  {
     return match self.state.lock() {
-      Ok(guard) => Ok(guard.active_workspace.clone()),
+      Ok(guard) => Ok(getter(guard)),
       Err(e) => Err(format!("Failed to acquire lock: {}", e)),
     };
   }
 
+  pub fn get_active_workspace(&self) -> Result<String, LockError> {
+    self.get_state(|guard| guard.active_workspace.clone())
+  }
+
   pub fn get_all_workspaces(&self) -> Result<Vec<Workspace>, LockError> {
-    return match self.state.lock() {
-      Ok(guard) => Ok(guard.all_workspaces.clone()),
-      Err(e) => Err(format!("Failed to acquire lock: {}", e)),
-    };
+    self.get_state(|guard| guard.all_workspaces.clone())
   }
 }
 
